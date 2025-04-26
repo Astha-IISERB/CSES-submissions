@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-typedef vector < vector<ll> Matrix;
+typedef vector<vector<ll>> Matrix;
 
 const ll INF = 1e18;
 Matrix multiply(Matrix &A, Matrix &B, int n)

@@ -1,62 +1,55 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int N, M;
+int nX[4] = {0, 0, 1, -1}; //up, down, left, right
+int nY[4] = {1, -1, 0, 0};
 
-void isConnected(int i, int j, vector<vector<char>> &A)
+int n, m, ans = 0;
+vector<vector<bool>> visited;
+vector<vector<char>> grid;
+
+bool isValid (int y, int x)
 {
-	//we want these changes to happen in the original grid
-	//so we use '&' operator
-	queue<pair<int, int>> q;
-	q.push({i, j});
-	while (q.size() > 0)
+	if (y < 0) return false;
+	if (x < 0) return false;
+	if (y >= n) return false;
+	if (x >= m) return false;
+	if (grid[y][x] == '#') return false;
+	return true;
+}
+
+void DFS(int x, int y)
+{
+	visited[x][y] = true;
+	for (int i = 0; i < 4; ++i)
 	{
-		pair<int, int> pos = q.front();
-		q.pop();
-		i = pos.first, j = pos.second;
-		A[i][j] = '#';
-		if (i + 1 < N)
+		int newX = x + nX[i];
+		int newY = y + nY[i];
+		if (isValid(newX, newY))
 		{
-			if (A[i + 1][j] == '.') //moving down
-				q.push({i + 1, j});
-		}
-		if (j + 1 < M)
-		{
-			if (A[i][j + 1] == '.') //moving to right
-				q.push({i, j + 1});
+			if (!visited[newX][newY])
+				DFS(newX, newY);
 		}
 	}
 }
 
 int main()
 {
-	int n, m;
 	cin >> n >> m;
-	cin.ignore();
-
-	N = n, M = m;
-
-	vector<vector<char>> A(n, vector<char> (m));
-	for (int i = 0; i < n; i++)
-	{
-		string num;
-		getline(cin, num);
-
-		for (int j = 0; j < m; ++j)
-			A[i][j] = num[j];
-	}
-	int rooms = 0;
+	visited.assign(n, vector<bool>(m, false));
+	grid.resize(n, vector<char>(m));
 	for (int i = 0; i < n; ++i)
-	{
 		for (int j = 0; j < m; ++j)
 		{
-			if (A[i][j] == '.')
-			{
-				rooms++;
-				isConnected(i, j, A);
-			}
+			cin >> grid[i][j];
 		}
-	}
-	cout << rooms << endl;
+	for (int i = 0; i < n; ++i)
+		for (int j = 0; j < m; ++j)
+			if (grid[i][j] == '.' && !visited[i][j])
+			{
+				DFS(i, j);
+				ans++;
+			}
+	cout << ans << endl;
 	return 0;
 }
